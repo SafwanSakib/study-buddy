@@ -91,7 +91,7 @@ No UI framework: just DOM APIs, Canvas 2D and CSS custom properties for theming.
 You need Node.js 18+ and a free Google Cloud project for the sign-in key.
 
 ```bash
-git clone <this repo>
+git clone https://github.com/SafwanSakib/study-buddy.git
 cd study-buddy
 cp .env.example .env      # add your Google OAuth Client ID
 npm install
