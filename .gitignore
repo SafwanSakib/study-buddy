@@ -1,0 +1,21 @@
+node_modules
+dist
+.env
+# Android app: secrets and build output
+android/keystore.properties
+android/*.keystore
+android/local.properties
+android/.gradle
+android/build
+android/app/build
+android/*.apk
+android/*.aab
+
+# Misc
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+android/.idea/
+android/app/release/

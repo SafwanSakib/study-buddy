@@ -1,0 +1,50 @@
+{
+  "packageId": "app.netlify.my_own_study_buddy",
+  "host": "my-own-study-buddy.netlify.app",
+  "name": "Study Buddy",
+  "launcherName": "Study Buddy",
+  "display": "standalone",
+  "themeColor": "#4F46E5",
+  "themeColorDark": "#000000",
+  "navigationColor": "#4F46E5",
+  "navigationColorDark": "#000000",
+  "navigationDividerColor": "#000000",
+  "navigationDividerColorDark": "#000000",
+  "backgroundColor": "#F6F7FB",
+  "enableNotifications": false,
+  "startUrl": "/",
+  "iconUrl": "https://my-own-study-buddy.netlify.app/icon-512.png",
+  "maskableIconUrl": "https://my-own-study-buddy.netlify.app/icon-maskable-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./study-buddy-release.keystore",
+    "alias": "studybuddy"
+  },
+  "appVersionName": "1.0.1",
+  "appVersionCode": 2,
+  "shortcuts": [],
+  "generatorApp": "bubblewrap-core",
+  "webManifestUrl": "https://my-own-study-buddy.netlify.app/manifest.webmanifest",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://my-own-study-buddy.netlify.app/",
+  "minSdkVersion": 24,
+  "orientation": "default",
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "protocolHandlers": [],
+  "fileHandlers": [],
+  "launchHandlerClientMode": "",
+  "displayOverride": [
+    "window-controls-overlay",
+    "standalone"
+  ],
+  "appVersion": "1.0.1"
+}

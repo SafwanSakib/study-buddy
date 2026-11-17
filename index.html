@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="icon" href="./icon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <title>Study Buddy</title>
+    <script>
+      // Apply the saved theme before first paint (no flash).
+      try { var t = localStorage.getItem('sb_theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+    </script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+  </head>
+  <body>
+    <!-- Sign-in screen -->
+    <section id="signin" class="screen" hidden>
+      <button class="icon-btn theme-toggle signin-theme" title="Toggle theme">🌙</button>
+      <div class="signin-card">
+        <img src="./icon.svg" alt="" width="64" height="64" />
+        <h1>Study Buddy</h1>
+        <p>Upload your slides, annotate them, and pick up where you left off on any device.
+           Everything is saved to your own Google Drive.</p>
+        <button id="signin-btn" class="btn primary big">Sign in with Google</button>
+        <p id="signin-error" class="error" hidden></p>
+      </div>
+    </section>
+
+    <!-- Library -->
+    <section id="library" class="screen" hidden>
+      <header class="topbar">
+        <div class="brand"><img src="./icon.svg" alt="" width="28" height="28" /> <span class="brand-name">Study Buddy</span></div>
+        <div class="spacer"></div>
+        <button id="new-folder-btn" class="btn" title="New folder">📁<span class="hide-sm"> New folder</span></button>
+        <button id="import-btn" class="btn" title="Import from Google Drive">
+          <svg width="16" height="16" viewBox="0 0 87.3 78" aria-hidden="true"><path d="m6.6 66.85 3.85 6.65c.8 1.4 1.95 2.5 3.3 3.3l13.75-23.8h-27.5c0 1.55.4 3.1 1.2 4.5z" fill="#0066da"/><path d="m43.65 25-13.75-23.8c-1.35.8-2.5 1.9-3.3 3.3l-25.4 44a9.06 9.06 0 0 0 -1.2 4.5h27.5z" fill="#00ac47"/><path d="m73.55 76.8c1.35-.8 2.5-1.9 3.3-3.3l1.6-2.75 7.65-13.25c.8-1.4 1.2-2.95 1.2-4.5h-27.502l5.852 11.5z" fill="#ea4335"/><path d="m43.65 25 13.75-23.8c-1.35-.8-2.9-1.2-4.5-1.2h-18.5c-1.6 0-3.15.45-4.5 1.2z" fill="#00832d"/><path d="m59.8 53h-32.3l-13.75 23.8c1.35.8 2.9 1.2 4.5 1.2h50.8c1.6 0 3.15-.45 4.5-1.2z" fill="#2684fc"/><path d="m73.4 26.5-12.7-22c-.8-1.4-1.95-2.5-3.3-3.3l-13.75 23.8 16.15 28h27.45c0-1.55-.4-3.1-1.2-4.5z" fill="#ffba00"/></svg>
+          <span class="hide-sm">Import</span>
+        </button>
+        <label class="btn primary" id="upload-label">
+          + Upload
+          <input id="file-input" type="file" multiple hidden
+            accept=".pdf,.ppt,.pptx,.odp,.doc,.docx,.odt,application/pdf" />
+        </label>
+        <button class="icon-btn theme-toggle" title="Toggle theme">🌙</button>
+        <button id="user-btn" class="avatar-btn" title="Account"></button>
+      </header>
+      <div id="offline-banner" class="offline-banner" hidden>You’re offline. Showing what’s saved on this device; changes sync when you’re back online.</div>
+      <main class="library-main">
+        <div id="dropzone" class="dropzone">
+          Drop PDFs, PowerPoint or Word files here — or use <b>+ Upload</b>.
+        </div>
+        <div id="uploads"></div>
+        <input id="search" class="search" type="search" placeholder="Search all folders…" />
+        <div id="home-sections"></div>
+        <nav id="crumbs" class="crumbs" aria-label="Folder path"></nav>
+        <div id="deck-grid" class="deck-grid"></div>
+        <p id="empty" class="muted center" hidden>This folder is empty. Upload slides or create a folder.</p>
+      </main>
+    </section>
+
+    <!-- Viewer -->
+    <section id="viewer" class="screen" hidden>
+      <header class="topbar viewer-bar">
+        <button id="back-btn" class="icon-btn" title="Back to library">←</button>
+        <div id="deck-title" class="deck-title"></div>
+        <div class="spacer"></div>
+        <span id="save-status" class="save-status"></span>
+        <button id="toolbar-toggle" class="icon-btn toolbar-toggle" title="Hide toolbar (\)" aria-expanded="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg>
+        </button>
+        <button class="icon-btn theme-toggle" title="Toggle theme">🌙</button>
+        <button id="menu-btn" class="icon-btn" title="More">⋮</button>
+        <div id="menu" class="menu" hidden>
+          <button data-action="star">☆ Star</button>
+          <button data-action="add-page">➕ Add page…</button>
+          <button data-action="delete-page">🗑 Delete this page</button>
+          <hr />
+          <button data-action="export-download">⬇ Download annotated PDF</button>
+          <button data-action="export-drive">☁ Save annotated copy to Drive</button>
+          <button data-action="rename">✏️ Rename</button>
+          <button data-action="open-drive">↗ Open in Google Drive</button>
+          <hr />
+          <button data-action="clear-page" class="danger">Clear annotations on this page</button>
+        </div>
+      </header>
+
+      <div class="toolbar" id="toolbar">
+        <div class="tool-group secondary">
+          <button class="tool" id="sidebar-btn" title="Pages & bookmarks">▤</button>
+          <button class="tool" id="search-btn" title="Search text (Ctrl+F)">🔍</button>
+        </div>
+        <div class="tool-group">
+          <button class="tool" data-tool="hand" title="Read, scroll & select text (H)">✋</button>
+          <button class="tool" data-tool="select" title="Select / lasso & move (V)">⬚</button>
+          <button class="tool" data-tool="pen" title="Pen (P)">✏️</button>
+          <button class="tool" data-tool="highlighter" title="Highlighter (L)">🖍️</button>
+          <button class="tool" data-tool="text" title="Text note (T) — tap a note to edit, drag to move">🅣</button>
+          <button class="tool shape-tool" data-tool="shape" title="Shape (S)">↗</button>
+          <select id="shape-kind" class="shape-kind" title="Shape type">
+            <option value="line">Line</option>
+            <option value="arrow">Arrow</option>
+            <option value="rect">Rectangle</option>
+            <option value="ellipse">Ellipse</option>
+          </select>
+          <button class="tool" data-tool="eraser" title="Eraser (E)">🧽</button>
+        </div>
+        <div class="tool-group palette" id="palette">
+          <button class="tool palette-btn" id="palette-btn" title="Colour & size"><span class="palette-dot"></span></button>
+          <div class="palette-pop">
+            <div class="colors" id="colors"></div>
+            <select id="size" title="Stroke size">
+              <option value="1">Thin</option>
+              <option value="2" selected>Medium</option>
+              <option value="4">Thick</option>
+            </select>
+          </div>
+        </div>
+        <div class="tool-group">
+          <button class="tool" id="undo" title="Undo (Ctrl+Z)">↶</button>
+          <button class="tool" id="redo" title="Redo (Ctrl+Y)">↷</button>
+        </div>
+        <div class="tool-group secondary">
+          <button class="tool" id="bookmark-btn" title="Bookmark this page (B)">🔖</button>
+          <button class="tool" id="stylus-btn" title="Stylus mode: pen draws, finger scrolls">✍️</button>
+          <button class="tool" id="focus-btn" title="Focus mode (F)">⛶</button>
+        </div>
+        <div class="tool-group secondary">
+          <button class="tool" id="zoom-out" title="Zoom out">−</button>
+          <button class="tool" id="zoom-fit" title="Fit width">⤢</button>
+          <button class="tool" id="zoom-in" title="Zoom in">+</button>
+        </div>
+        <div class="tool-group page-indicator"><span id="page-num">–</span></div>
+        <button class="tool more-tools" id="more-tools-btn" title="More tools">⋯</button>
+      </div>
+
+      <div id="search-bar" class="search-bar" hidden>
+        <input id="search-input" type="search" placeholder="Search in slides…" autocomplete="off" />
+        <span id="search-count" class="muted"></span>
+        <button class="icon-btn small" id="search-prev" title="Previous (Shift+Enter)">▲</button>
+        <button class="icon-btn small" id="search-next" title="Next (Enter)">▼</button>
+        <button class="icon-btn small" id="search-close" title="Close (Esc)">✕</button>
+      </div>
+
+      <div class="viewer-body">
+        <aside id="sidebar" class="sidebar" hidden>
+          <div class="side-tabs">
+            <button data-sidetab="pages" class="active">Pages</button>
+            <button data-sidetab="bookmarks">Bookmarks</button>
+          </div>
+          <div id="thumb-list" class="thumb-list"></div>
+          <div id="bookmark-list" class="bookmark-list" hidden></div>
+        </aside>
+        <div id="sidebar-backdrop" class="sidebar-backdrop" hidden></div>
+        <div id="pages" class="pages"></div>
+      </div>
+
+      <div class="focus-controls">
+        <button id="focus-prev" class="focus-btn" title="Previous page">‹</button>
+        <span id="focus-page" class="focus-page"></span>
+        <button id="focus-next" class="focus-btn" title="Next page">›</button>
+        <span class="focus-sep"></span>
+        <button id="focus-zoom-out" class="focus-btn" title="Zoom out (Ctrl −)">−</button>
+        <button id="focus-zoom-fit" class="focus-btn" title="Fit (Ctrl 0)">⤢</button>
+        <button id="focus-zoom-in" class="focus-btn" title="Zoom in (Ctrl +)">+</button>
+        <span class="focus-sep"></span>
+        <button id="focus-exit" class="focus-btn" title="Exit focus mode (Esc)">✕</button>
+      </div>
+      <div id="selection-bar" class="selection-bar" hidden>
+        <button data-sel="color" title="Apply the current colour">🎨</button>
+        <button data-sel="edit" title="Edit note">✏️</button>
+        <button data-sel="delete" title="Delete (Del)">🗑</button>
+      </div>
+      <div id="zoom-pill" class="zoom-pill" hidden></div>
+      <div id="loading" class="loading" hidden><div class="spinner"></div><span id="loading-text">Loading…</span></div>
+    </section>
+
+    <div id="toast" class="toast" hidden></div>
+    <div id="reconnect" class="reconnect" hidden>
+      Your Google session expired. <button id="reconnect-btn" class="btn primary">Reconnect</button>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
